@@ -3,26 +3,34 @@
 % -> only act(wait) allowed after M is reached. (THIS IS NOT IMPLEMENTED, trains can go past the target as long as they get there again eventually)
 moves(M,ID) :- start(ID,_,St,_) , end(ID,_,End) , M= End - St +1.
 
-% Generate
-{action(train(ID),A,T) : act(A) , train(ID)} = 1 :- moves(M,ID), T=1..M.
-
 % Define
 
-on(X,Y,ID,Dir,1)   :- start(ID,(Y,X),Dep,Dir).                          % Init ignores Departure time
-on(X,Y,ID,Dir_out,T+1) :-   action(train(ID), A, T) ,                   % 
+{action_(train(ID),A,T) : act(A) } = 1 :- on(X,Y,ID,Dir,T) , not goal(ID,T).
+:- action_(train(ID),A,T) , on(X,Y,ID,Dir,T) , cell((Y,X),Tr) , not action_valid(A,Dir,_,Tr).
+% :- action_(train(ID),A,T) , goal(ID,T).
+action_(train(ID),move_forward,T) :-  start(ID,(Y,X),Dep,_) , T = 0..Dep+1.
+
+
+
+on(X,Y,ID,Dir,1)   :- start(ID,(Y,X),0,Dir).                          % Init ignores Departure time
+on(X,Y,ID,Dir,Dep+1)   :- start(ID,(Y,X),Dep,Dir) , Dep>0.                          % Init ignores Departure time
+
+%action(train(ID),move_forward,Dep) :-  start(ID,(Y,X),Dep,Dir).         % Flatland needs an initial action
+
+on(X,Y,ID,Dir_out,T+1) :-   action_(train(ID), A, T) ,                   % 
                             on(X',Y',ID,Dir',T) ,                       % Cell the train is on step T
                             cell((Y',X'),Tr') ,                         % 
                             waiting(Move_dir , A , Dir_out) ,           % if Action is waiting -> no movement, but keep dir
                             move_in(Move_dir , (X1,Y1)) ,               % 
                             (X,Y)=(X'+ X1,Y' + Y1),                     % move train position
                             cell((Y,X),Tr) , Tr != 0,                   % new position must be a track
-                            not moves(T,ID) , 
-                            action_valid(A,Dir',Dir_out,Tr').           
+                            not moves(T,ID) ,                           % 
+                            action_valid(A,Dir',Dir_out,Tr').           % dir_out has to taken with action, so this line can be removed. -------------------------
 
 waiting(Move_Dir , wait , Dir) :- Move_Dir=none , direction(Dir).           %
 waiting(Dir_out, A , Dir_out) :- act(A) , A != wait , direction(Dir_out).   %
 
-turning(Act) :- Act = move_left ; Act = move_right.
+turning(Act) :- Act = move_left ; Act = move_right.                         % not used?
 
 forward_only(Dir_map) :- Dir_map = (1;2;4;8).
 % Given a train direction and outgoing direction on a specific Track , returns possible Actions that resulted in these 
@@ -38,7 +46,7 @@ action_valid(Act,Dir_in,Dir_out,Tr) :- action_from_dir_dir_map(Act,Dir_in,Dir_ou
     direction(Dir_out).
 
 % Main filter that checks if an action is valid
-:-  action(train(ID), A, T) ,   
-    on(X,Y,ID,Dir,T) , 
-    cell((Y,X),Tr) , 
-    not action_valid(A,Dir,_,Tr).
+%:-  action(train(ID), A, T) ,   
+%    on(X,Y,ID,Dir,T) , 
+%    cell((Y,X),Tr) , 
+%    not action_valid(A,Dir,_,Tr).
