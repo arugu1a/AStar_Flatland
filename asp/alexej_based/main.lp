@@ -9,14 +9,19 @@ cost_of_action(2,move_left).
 cost_of_action(2,move_right).
 cost_of_action(3,wait).
 
-weighted_action(ID,A,W,T) :- action(train(ID), A , T) , cost_of_action(W,A).
+weighted_action(ID,A,W,T) :- action_(train(ID), A , T) , cost_of_action(W,A).
 cost(ID,C) :- C = #sum { W , T : weighted_action(ID,_,W,T) } , train(ID).
-number_of_actions(ID,N) :- N = #count { ID,A,T : action(train(ID), A , T)} , train(ID).
+number_of_actions(ID,N) :- N = #count { ID,A,T : action_(train(ID), A , T)} , train(ID).
 %#minimize {C : cost(ID,C)}.
 %#minimize {N : number_of_actions(ID,N)}.
 
+
+%action(train(ID), move_forward, 0) :- train(ID).
+action(train(ID), A, T+1) :- action_(train(ID), A, T). %, not goal(ID,T).
+%action(train(ID), move_forward, T+1) :- action_(train(ID), _, T) , goal(ID,T).
+
 % these are just used for Display
-a(ID,(X,Y),A,Dir,T) :- action(train(ID), A, T) , on(X,Y,ID,Dir,T).
+a(ID,(Y,X),A,Dir,T) :- action(train(ID), A, T+1) , on(X,Y,ID,Dir,T).
 on(X,Y,ID,M) :- on(X,Y,ID,_,M).
 
 %Display
