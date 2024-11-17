@@ -1,10 +1,12 @@
 from envs import params
+from asp  import params as params_asp 
 from argparse import ArgumentParser, Namespace
 
 # custom modules
 from modules.dirs import create_dirs, find_start
 from modules.save import save_lp, save_png, save_pkl
 from modules.convert import convert_to_clingo
+
 
 # Flatland modules
 from flatland.envs.rail_env import RailEnv
@@ -62,6 +64,8 @@ def get_args():
 
     return(parser.parse_args())
 
+def preprocess_env(env_clingo , preprocess):
+    return f"% TODO\n {preprocess}\n"
 
 def main():
     if check_params(params):
@@ -102,10 +106,22 @@ def main():
 
             # save files
             file_name = f"env_{i:03d}--{params.number_of_agents}_{params.max_num_cities}"
-            save_lp(convert_to_clingo(env), file_name, path)
+            env_clingo = convert_to_clingo(env)
+            save_lp(env_clingo, file_name, path)
             save_png(env, file_name, path)
             save_pkl(env, file_name, path)
-            
+
+            # Preprocessing Addon
+            file_name_preprocess = file_name + "_pr"
+            clingo_str = "%This file uses the generated enviroment and preproces.lp\n"
+            preprocess = params_asp.preprocess
+            clingo_str += preprocess_env(env_clingo , preprocess)
+
+            # Test
+            for i in range(1,5): 
+                clingo_str += f"test_fact({i}).\n"
+
+            save_lp(clingo_str, file_name_preprocess, path)
 
 if __name__ == "__main__":
     main()

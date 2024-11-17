@@ -2,7 +2,7 @@
 act(move_forward).
 act(move_left).
 act(move_right). 
-%act(wait).
+act(wait).
 
 % Directions. The none-direction is only used in Move_dir for waiting and not defined here.
 direction(n).

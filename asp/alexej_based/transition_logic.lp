@@ -8,14 +8,11 @@ moves(M,ID) :- start(ID,_,St,_) , end(ID,_,End) , M= End - St +1.
 {action_(train(ID),A,T) : act(A) } = 1 :- on(X,Y,ID,Dir,T) , not goal(ID,T).
 :- action_(train(ID),A,T) , on(X,Y,ID,Dir,T) , cell((Y,X),Tr) , not action_valid(A,Dir,_,Tr).
 % :- action_(train(ID),A,T) , goal(ID,T).
-action_(train(ID),move_forward,T) :-  start(ID,(Y,X),Dep,_) , T = 0..Dep+1.
+action(train(ID),wait,T) :-  start(ID,(Y,X),Dep,_) , T = 0..Dep.    % filler actions before Dep
+action(train(ID),move_forward,Dep+1) :-  start(ID,(Y,X),Dep,_).                  % spawns train in Flatland
+action(train(ID),wait,Dep+2) :-  start(ID,(Y,X),Dep,_). 
 
-
-
-on(X,Y,ID,Dir,1)   :- start(ID,(Y,X),0,Dir).                          % Init ignores Departure time
-on(X,Y,ID,Dir,Dep+1)   :- start(ID,(Y,X),Dep,Dir) , Dep>0.                          % Init ignores Departure time
-
-%action(train(ID),move_forward,Dep) :-  start(ID,(Y,X),Dep,Dir).         % Flatland needs an initial action
+on(X,Y,ID,Dir,Dep+2)   :- start(ID,(Y,X),Dep,Dir).                          % spawns train in ASP logic
 
 on(X,Y,ID,Dir_out,T+1) :-   action_(train(ID), A, T) ,                   % 
                             on(X',Y',ID,Dir',T) ,                       % Cell the train is on step T
