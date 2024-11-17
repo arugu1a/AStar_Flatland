@@ -11,6 +11,13 @@ time(Train_ID, Start_time..End_time) :- start(Train_ID, (_, _), Start_time, _), 
 %    train step logic encoding
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% extra action generation so output matches flatlands demands
+
+action(train(Train_ID), move_forward, Start_time) :- start(Train_ID, _, Start_time, _).
+action(train(Train_ID), wait, Time) :- start(Train_ID, _, Start_time, _), Time=0..Start_time-1.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % start kick
 kick(Train_ID, (Train_ID, Time), (X, Y), Outgoing_direction, Action) :- start(Train_ID, (X, Y), Time, Incoming_direction),
 																			cell((X, Y), TrackType),
@@ -63,6 +70,6 @@ a(Train_ID, (X, Y), Time) :- move(Train_ID, (X, Y), (_, Time), _, _).
 
 
 %#show move/5.
-%#show action/3.
-#show a/3.
+#show action/3.
+%#show a/3.
 %#show time/2.
