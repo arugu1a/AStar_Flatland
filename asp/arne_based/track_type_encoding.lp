@@ -1,11 +1,10 @@
 % cardinal direction vector encoding for the grid space
 % n: north, e: east, s: south, w: west
-% remember: (Y, X)
 
-#const n = (0, -1).
-#const e = (1, 0).
-#const s = (0, 1).
-#const w = (-1, 0).
+#const n = (-1, 0).
+#const e = (0, 1).
+#const s = (1, 0).
+#const w = (0, -1).
 
 % these 4 facts might be obsolete
 direction(w).

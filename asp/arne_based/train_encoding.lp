@@ -12,34 +12,34 @@ time(Train_ID, Start_time..End_time) :- start(Train_ID, (_, _), Start_time, _), 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % start kick
-kick(Train_ID, (Train_ID, Time), (Y, X), Outgoing_direction, Action) :- start(Train_ID, (Y, X), Time, Incoming_direction),
-																			cell((Y, X), TrackType),
+kick(Train_ID, (Train_ID, Time), (X, Y), Outgoing_direction, Action) :- start(Train_ID, (X, Y), Time, Incoming_direction),
+																			cell((X, Y), TrackType),
 																			connection(TrackType, Incoming_direction, Outgoing_direction, Action).
 
 % start wait kick
 % dirty workaround:	setting the kick position to (Y-B, X-A) to preserve the direction of the train but 
 % 					at the same time achieve a illusory +(0, 0) movement
-kick(Train_ID, (Train_ID, Time), (Y-B, X-A), (B, A), wait) :- start(Train_ID, (Y, X), Time, (B, A)).
+kick(Train_ID, (Train_ID, Time), (X-B, Y-A), (B, A), wait) :- start(Train_ID, (X, Y), Time, (B, A)).
 
-{move(Train_ID, (Y + B, X + A), (Train_ID, Time+1), (B, A), Action)} :- kick(Train_ID, (Train_ID, Time), (Y, X), (B, A), Action),
+{move(Train_ID, (X + B, Y + A), (Train_ID, Time+1), (B, A), Action)} :- kick(Train_ID, (Train_ID, Time), (X, Y), (B, A), Action),
 																			time(Train_ID, Time),
 																			end(Train_ID, (_, _), End_time),
 																			Time<End_time.
 																			
-kick(Train_ID, (Train_ID, Time), (Y, X), Outgoing_direction, Action) :- move(Train_ID, (Y, X), (Train_ID, Time), Incoming_direction, _),
-																			cell((Y, X), Track_type),
+kick(Train_ID, (Train_ID, Time), (X, Y), Outgoing_direction, Action) :- move(Train_ID, (X, Y), (Train_ID, Time), Incoming_direction, _),
+																			cell((X, Y), Track_type),
 																			connection(Track_type, Incoming_direction, Outgoing_direction, Action),
-																			not end(Train_ID, (Y, X), _).
+																			not end(Train_ID, (X, Y), _).
 
 % wait kicks
 % same workaround as in the start wait kick																
-kick(Train_ID, (Train_ID, Time), (Y-B, X-A), (B, A), wait) :- move(Train_ID, (Y, X), (Train_ID, Time), (B, A), _),
-																			cell((Y, X), _),
-																			not end(Train_ID, (Y, X), _).
+kick(Train_ID, (Train_ID, Time), (X-B, Y-A), (B, A), wait) :- move(Train_ID, (X, Y), (Train_ID, Time), (B, A), _),
+																			cell((X, Y), _),
+																			not end(Train_ID, (X, Y), _).
 
 
 % there has to be a move to the end cell		
-:- not move(Train_ID, (Y, X), (_, _), _, _), end(Train_ID, (Y, X), _).
+:- not move(Train_ID, (X, Y), (_, _), _, _), end(Train_ID, (X, Y), _).
 
 % there cannot be a move without a legal time
 % !this should become redundant when simplifing time() and correcting the move generation
@@ -49,17 +49,17 @@ kick(Train_ID, (Train_ID, Time), (Y-B, X-A), (B, A), wait) :- move(Train_ID, (Y,
 :- {move(Train_ID, (_, _), (Train_ID, Time), _, _)} > 1, time(Train_ID, Time).
 
 % two different trains cannot move to same cell
-:- move(Train_ID_1, (Y, X), (Train_ID_1, Time), (_, _), _), move(Train_ID_2, (Y, X), (Train_ID_2, Time), (_, _), _), Train_ID_1 != Train_ID_2.
+:- move(Train_ID_1, (X, Y), (Train_ID_1, Time), (_, _), _), move(Train_ID_2, (X, Y), (Train_ID_2, Time), (_, _), _), Train_ID_1 != Train_ID_2.
 
 %WIP, 2 trains cannot swap spaces
-:- move(Train_ID_1, (Y, X), (Train_ID_1, Time), (B, A), _),
-	move(Train_ID_2, (Y-B, X-A), (Train_ID_2, Time), (_, _), _),
+:- move(Train_ID_1, (X, Y), (Train_ID_1, Time), (B, A), _),
+	move(Train_ID_2, (X-B, Y-A), (Train_ID_2, Time), (_, _), _),
 	Train_ID_1 != Train_ID_2.
 
 
 % translation from move to the simplified action
 action(train(Train_ID), Action, Time) :- move(Train_ID, _, (Train_ID, Time), _, Action).
-a(Train_ID, (Y, X), Time) :- move(Train_ID, (Y, X), (_, Time), _, _).
+a(Train_ID, (X, Y), Time) :- move(Train_ID, (X, Y), (_, Time), _, _).
 
 
 %#show move/5.
