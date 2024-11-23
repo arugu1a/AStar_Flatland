@@ -9,9 +9,9 @@ cost_of_action(2,move_left).
 cost_of_action(2,move_right).
 cost_of_action(3,wait).
 
-weighted_action(ID,A,W,T) :- action_(train(ID), A , T) , cost_of_action(W,A).
-cost(ID,C) :- C = #sum { W , T : weighted_action(ID,_,W,T) } , train(ID).
-number_of_actions(ID,N) :- N = #count { ID,A,T : action_(train(ID), A , T)} , train(ID).
+%weighted_action(ID,A,W,T) :- action_(train(ID), A , T) , cost_of_action(W,A).
+%cost(ID,C) :- C = #sum { W , T : weighted_action(ID,_,W,T) } , train(ID).
+%number_of_actions(ID,N) :- N = #count { ID,A,T : action_(train(ID), A , T)} , train(ID).
 %#minimize {C : cost(ID,C)}.
 %#minimize {N : number_of_actions(ID,N)}.
 
@@ -31,3 +31,4 @@ on(X,Y,ID,M) :- on(X,Y,ID,_,M).
 %#show action/3.
 %#show moves/2.
 %#show on/5.
+#show delay/2.
