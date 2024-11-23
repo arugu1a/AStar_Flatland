@@ -1,21 +1,22 @@
 % how many time steps is a train allowed to do actions?
 % After M is reached the train should be at dest. and stay there 
 % -> only act(wait) allowed after M is reached. (THIS IS NOT IMPLEMENTED, trains can go past the target as long as they get there again eventually)
-moves(M,ID) :- start(ID,_,St,_) , end(ID,_,End) , M= End - St +1.
+moves(M,ID) :- start(ID,_,St,_) , end(ID,_,End) , M= End. % - St +1.
 
 % Define
 
 {action_(train(ID),A,T) : act(A) } = 1 :- on(X,Y,ID,Dir,T) , not goal(ID,T).
 :- action_(train(ID),A,T) , on(X,Y,ID,Dir,T) , cell((Y,X),Tr) , not action_valid(A,Dir,_,Tr).
 % :- action_(train(ID),A,T) , goal(ID,T).
-action_(train(ID),move_forward,T) :-  start(ID,(Y,X),Dep,_) , T = 0..Dep+1.
 
+delay(ID1,Del) :- Del = Dep..(Dep+N-1 + 20) , N = #count { ID : start(ID,(Y,X),Dep,_) } , start(ID1,(Y,X),Dep,_) , start(ID2,(Y,X),Dep,_).
+{start_with_delay(ID,(Y,X),Del,Dir) : delay(ID,Del)}=1 :- start(ID,(Y,X),Dep,Dir).     % delay has to return Del = Dep + time needed so all trains can depart on this spot.
 
+action(train(ID),wait,T) :-  start_with_delay(ID,(Y,X),Dep,_) , T = 0..Dep.            % filler actions before Dep
+action(train(ID),move_forward,Dep+1) :-  start_with_delay(ID,(Y,X),Dep,Dir).             % spawns train in Flatland TODO BUG in Flatland, multiple trains are allowed to spawn at same X,Y at same Dep
+%action(train(ID),wait,Dep+2) :-  start_with_delay(ID,(Y,X),Dep,_).                     % only needed if GIF and path.csv should be synced
 
-on(X,Y,ID,Dir,1)   :- start(ID,(Y,X),0,Dir).                          % Init ignores Departure time
-on(X,Y,ID,Dir,Dep+1)   :- start(ID,(Y,X),Dep,Dir) , Dep>0.                          % Init ignores Departure time
-
-%action(train(ID),move_forward,Dep) :-  start(ID,(Y,X),Dep,Dir).         % Flatland needs an initial action
+on(X,Y,ID,Dir,Dep+2)   :- start_with_delay(ID,(Y,X),Dep,Dir).                          % spawns train in ASP logic
 
 on(X,Y,ID,Dir_out,T+1) :-   action_(train(ID), A, T) ,                   % 
                             on(X',Y',ID,Dir',T) ,                       % Cell the train is on step T
