@@ -4,6 +4,14 @@ act(move_left).
 act(move_right). 
 %act(wait).
 
+% cardinal direction vector encoding for the grid space
+% n: north, e: east, s: south, w: west
+
+#const n = (-1, 0).
+#const e = (0, 1).
+#const s = (1, 0).
+#const w = (0, -1).
+
 % Directions. The none-direction is only used in Move_dir for waiting and not defined here.
 direction(n).
 direction(e).
@@ -58,3 +66,19 @@ act_dir(Dir_out,Act,s) :- Act = move_left ,  Dir_out = e , direction(Dir_out).
 act_dir(Dir_out,Act,s) :- Act = move_right , Dir_out = w , direction(Dir_out).
 act_dir(Dir_out,Act,w) :- Act = move_left ,  Dir_out = s , direction(Dir_out).
 act_dir(Dir_out,Act,w) :- Act = move_right , Dir_out = n , direction(Dir_out).
+
+forward_only(Dir_map) :- Dir_map = (1;2;4;8).
+% Given a train direction and outgoing direction on a specific Track , returns possible Actions that resulted in these 
+action_from_dir_dir_map(move_forward,Dir,Dir_out,Dir_map) :- forward_only(Dir_map) , direction(Dir) , direction(Dir_out).      % all tiles without turning options while going towards Dir
+action_from_dir_dir_map(wait,Dir,Dir_out,Dir_map)         :- forward_only(Dir_map) , direction(Dir) , direction(Dir_out).
+action_from_dir_dir_map(Act,Dir,Dir_out,Dir_map)          :- act_dir(Dir_out,Act,Dir) , not forward_only(Dir_map) , dir_map_range(Dir_map).  
+
+connection(Tr,Dir_in,Dir_out,Act) :-    %track(Tr) ,             
+                                        action_from_dir_dir_map(Act,Dir_in,Dir_out,Dir_map) ,
+                                        tr_map(Dir_map, Dir_in, Tr) ,
+                                        dir_map(Dir_out,Dir_map) , 
+                                        direction(Dir_in) ,
+                                        direction(Dir_out).
+                                        %act(Act).
+
+%#show connection/4.

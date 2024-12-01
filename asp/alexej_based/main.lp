@@ -17,11 +17,11 @@ cost_of_action(3,wait).
 
 
 %action(train(ID), move_forward, 0) :- train(ID).
-action(train(ID), A, T+1) :- action_(train(ID), A, T). %, not goal(ID,T).
+action(train(ID), A, T) :- action_(train(ID), A, T). %, not goal(ID,T).
 %action(train(ID), move_forward, T+1) :- action_(train(ID), _, T) , goal(ID,T).
 
 % these are just used for Display
-a(ID,(Y,X),A,Dir,T) :- action(train(ID), A, T+1) , on(X,Y,ID,Dir,T).
+a(ID,(Y,X),A,Dir,T) :- action(train(ID), A, T) , on(X,Y,ID,Dir,T).
 on(X,Y,ID,M) :- on(X,Y,ID,_,M).
 
 %Display

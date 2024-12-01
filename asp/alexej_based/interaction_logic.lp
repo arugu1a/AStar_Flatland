@@ -1,14 +1,3 @@
-% EXPERIMENT no waiting on start cell
-% :- action(train(ID), A, T) , start(ID,(X',Y'),Dep,Dir) , on(X,Y,ID,Dir,T) , A=wait , (X,Y)=(X',Y').
-% :- action(train(ID), A, T) , end(ID,(Y,X),End) , not on(X,Y,ID,Dir,T) , A=wait , direction(Dir).
-
-
-% no waiting unless already at goal OR no other action possible
-%*
-:-  action(train(ID), wait, T) , 
-    on(X,Y,ID,T) , 
-    end(ID,(Y,X),End).
-*%
 % Logic for trains blocking eachother ---------------------------------------------------------------------
 :- on(X,Y,ID1,T) , on(X,Y,ID2,T) , ID1 != ID2.      % Trains are not allowed to occupy same cell
 
@@ -32,5 +21,3 @@ time(T,ID) :- T= 0..M , moves(M,ID).
 
 #show goal/2.
 #show time/1.
-
-% ISSUE: Trains can spawn on the same cell at the same time step

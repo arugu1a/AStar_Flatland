@@ -4,5 +4,8 @@
 
 primary=['asp/arne_based/main.lp']
 #primary=['asp/alexej_based/main.lp']
+#primary=['asp/shared_paths_based/main.lp']
 
 secondary=[]
+
+make_GIF = False
