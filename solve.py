@@ -19,6 +19,7 @@ from clingo.application import Application, clingo_main
 from flatland.utils.rendertools import RenderTool
 import imageio.v2 as imageio
 
+make_GIF = False
 
 class MalfunctionManager():
     def __init__(self, num_agents):
@@ -179,13 +180,14 @@ def main():
 
         mal.deduct() #??? where in the loop should this go - before context?
 
-        # render an image
-        filename = 'tmp/frames/flatland_frame_{:04d}.png'.format(timestep)
-        if env_renderer is not None:
-            env_renderer.render_env(show=True, show_observations=False, show_predictions=False)
-            env_renderer.gl.save_image(filename)
-            env_renderer.reset()
-        images.append(imageio.imread(filename))
+        if params.make_GIF:
+            # render an image
+            filename = 'tmp/frames/flatland_frame_{:04d}.png'.format(timestep)
+            if env_renderer is not None:
+                env_renderer.render_env(show=True, show_observations=False, show_predictions=False)
+                env_renderer.gl.save_image(filename)
+                env_renderer.reset()
+            images.append(imageio.imread(filename))
 
         # add to the log
         for a in actions[timestep]:
@@ -196,7 +198,8 @@ def main():
     # combine images into gif
     stamp = time.time()
     os.makedirs(f"output/{stamp}", exist_ok=True)
-    imageio.mimsave(f"output/{stamp}/animation.gif", images, format='GIF', loop=0, duration=240)
+    if params.make_GIF:
+        imageio.mimsave(f"output/{stamp}/animation.gif", images, format='GIF', loop=0, duration=240)
 
     # save output log
     log.save(stamp)

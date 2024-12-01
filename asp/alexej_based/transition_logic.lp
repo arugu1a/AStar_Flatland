@@ -6,7 +6,7 @@ moves(M,ID) :- start(ID,_,St,_) , end(ID,_,End) , M= End. % - St +1.
 % Define
 
 {action_(train(ID),A,T) : act(A) } = 1 :- on(X,Y,ID,Dir,T) , not goal(ID,T).
-:- action_(train(ID),A,T) , on(X,Y,ID,Dir,T) , cell((Y,X),Tr) , not action_valid(A,Dir,_,Tr).
+:- action_(train(ID),A,T) , on(X,Y,ID,Dir,T) , cell((Y,X),Tr) , not connection(Tr,Dir,_,A).
 % :- action_(train(ID),A,T) , goal(ID,T).
 
 delay(ID1,Del) :- Del = Dep..(Dep+N-1 + 20) , N = #count { ID : start(ID,(Y,X),Dep,_) } , start(ID1,(Y,X),Dep,_) , start(ID2,(Y,X),Dep,_).
@@ -26,28 +26,9 @@ on(X,Y,ID,Dir_out,T+1) :-   action_(train(ID), A, T) ,                   %
                             (X,Y)=(X'+ X1,Y' + Y1),                     % move train position
                             cell((Y,X),Tr) , Tr != 0,                   % new position must be a track
                             not moves(T,ID) ,                           % 
-                            action_valid(A,Dir',Dir_out,Tr').           % dir_out has to taken with action, so this line can be removed. -------------------------
+                            connection(Tr',Dir',Dir_out,A).             % dir_out has to taken with action, so this line can be removed. -------------------------
 
 waiting(Move_Dir , wait , Dir) :- Move_Dir=none , direction(Dir).           %
 waiting(Dir_out, A , Dir_out) :- act(A) , A != wait , direction(Dir_out).   %
 
 turning(Act) :- Act = move_left ; Act = move_right.                         % not used?
-
-forward_only(Dir_map) :- Dir_map = (1;2;4;8).
-% Given a train direction and outgoing direction on a specific Track , returns possible Actions that resulted in these 
-action_from_dir_dir_map(move_forward,Dir,Dir_out,Dir_map) :- forward_only(Dir_map) , direction(Dir) , direction(Dir_out).      % all tiles without turning options while going towards Dir
-action_from_dir_dir_map(wait,Dir,Dir_out,Dir_map)         :- forward_only(Dir_map) , direction(Dir) , direction(Dir_out).
-action_from_dir_dir_map(Act,Dir,Dir_out,Dir_map)          :- act_dir(Dir_out,Act,Dir) , not forward_only(Dir_map) , dir_map_range(Dir_map).  
-
-%
-action_valid(Act,Dir_in,Dir_out,Tr) :- action_from_dir_dir_map(Act,Dir_in,Dir_out,Dir_map) , 
-    tr_map(Dir_map, Dir_in, Tr) ,
-    dir_map(Dir_out,Dir_map) , 
-    direction(Dir_in) ,
-    direction(Dir_out).
-
-% Main filter that checks if an action is valid
-%:-  action(train(ID), A, T) ,   
-%    on(X,Y,ID,Dir,T) , 
-%    cell((Y,X),Tr) , 
-%    not action_valid(A,Dir,_,Tr).
