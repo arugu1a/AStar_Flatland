@@ -2,7 +2,7 @@
 act(move_forward).
 act(move_left).
 act(move_right). 
-%act(wait).
+act(wait).
 
 % cardinal direction vector encoding for the grid space
 % n: north, e: east, s: south, w: west
