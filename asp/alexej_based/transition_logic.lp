@@ -5,7 +5,7 @@ moves(M,ID) :- start(ID,_,St,_) , end(ID,_,End) , M= End. % - St +1.
 
 % Define
 
-{action_(train(ID),A,T) : act(A) } = 1 :- on(X,Y,ID,Dir,T) , not goal(ID,T).
+{action_(train(ID),A,T) : act(A) , A != wait } = 1 :- on(X,Y,ID,Dir,T) , not goal(ID,T).
 :- action_(train(ID),A,T) , on(X,Y,ID,Dir,T) , cell((Y,X),Tr) , not connection(Tr,Dir,_,A).
 % :- action_(train(ID),A,T) , goal(ID,T).
 

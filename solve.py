@@ -86,7 +86,8 @@ class SimulationManager():
         """ update list of actions following malfunction """
         # pass env, secondary, context
         app = FlatlandPlan(self.env, context)
-        clingo_main(app, self.primary)
+        # clingo_main(app, self.primary)
+        clingo_main(app, self.secondary)
         return(app.action_list)
 
 
