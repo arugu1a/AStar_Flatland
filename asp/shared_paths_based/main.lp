@@ -4,6 +4,6 @@
 
 %action(train(ID), A, T+1) :- action_(train(ID), A, T).
 % these are just used for Display
-a((R,P),(Y,X),A,Dir,Step) :- action_((R,P), A, Step) , on(X,Y,(R,P),Dir,Step).
+a(ID,(Y,X),A,Dir,T) :- action(ID, A, T) , on(X,Y,(R,P),Dir,T-Delay) , delay(ID,Delay).
 
-%#show a/5.
+#show a/5.
