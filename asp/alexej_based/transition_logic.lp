@@ -5,11 +5,11 @@ moves(M,ID) :- start(ID,_,St,_) , end(ID,_,End) , M= End. % - St +1.
 
 % Define
 
-{action_(train(ID),A,T) : act(A) , A != wait } = 1 :- on(X,Y,ID,Dir,T) , not goal(ID,T).
+{action_(train(ID),A,T) : act(A) %*, A != wait*% } = 1 :- on(X,Y,ID,Dir,T) , not goal(ID,T).
 :- action_(train(ID),A,T) , on(X,Y,ID,Dir,T) , cell((Y,X),Tr) , not connection(Tr,Dir,_,A).
 % :- action_(train(ID),A,T) , goal(ID,T).
 
-delay(ID1,Del) :- Del = Dep..(Dep+N-1 + 20) , N = #count { ID : start(ID,(Y,X),Dep,_) } , start(ID1,(Y,X),Dep,_) , start(ID2,(Y,X),Dep,_).
+delay(ID1,Del) :- Del = Dep..(Dep+N-1 + 5) , N = #count { ID : start(ID,(Y,X),Dep,_) } , start(ID1,(Y,X),Dep,_) , start(ID2,(Y,X),Dep,_).
 {start_with_delay(ID,(Y,X),Del,Dir) : delay(ID,Del)}=1 :- start(ID,(Y,X),Dep,Dir).     % delay has to return Del = Dep + time needed so all trains can depart on this spot.
 
 action(train(ID),wait,T) :-  start_with_delay(ID,(Y,X),Dep,_) , T = 0..Dep.            % filler actions before Dep
@@ -28,6 +28,7 @@ on(X,Y,ID,Dir_out,T+1) :-   action_(train(ID), A, T) ,                   %
                             not moves(T,ID) ,                           % 
                             connection(Tr',Dir',Dir_out,A).             % dir_out has to taken with action, so this line can be removed. -------------------------
 
+%:- malfunction(ID,_,T) , action_(train(ID), A, T) , act(A) , A!=wait.
 waiting(Move_Dir , wait , Dir) :- Move_Dir=none , direction(Dir).           %
 waiting(Dir_out, A , Dir_out) :- act(A) , A != wait , direction(Dir_out).   %
 
