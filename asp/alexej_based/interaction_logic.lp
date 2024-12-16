@@ -17,7 +17,7 @@ goal(ID) :- goal(ID,_).
 goal(ID,T) :- on(X,Y,ID,T) , end(ID,(Y,X),End) , time(T,ID).
 :- not goal(ID) , train(ID).
 
-time(T,ID) :- T= 0..M , moves(M,ID).
+time(T,ID) :- T= 0..M-1 , moves(M,ID).
 
 #show goal/2.
 #show time/1.

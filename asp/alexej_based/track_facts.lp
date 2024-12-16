@@ -17,6 +17,7 @@ direction(n).
 direction(e).
 direction(s).
 direction(w).
+direction(none).
 
 move_in(n    , (0,-1)).
 move_in(e    , (1,0) ).
@@ -57,7 +58,7 @@ tr_map(Dir_map , w , Tr) :- Dir_map = (Tr & 15)    , track(Tr).
 % Table that maps train direction and action to new direction
 % The first two lines should never get used. 
 act_dir(Dir_out,Act,Dir) :-   Act = move_forward , Dir_out = Dir , direction(Dir_out).      % THIS MIGHT CAUSE PROBLEMS
-act_dir(Dir_out,Act,Dir) :-   Act = wait        ,  Dir_out = Dir , direction(Dir_out).
+%act_dir(Dir_out,Act,Dir) :-   Act = wait        ,  Dir_out = Dir , direction(Dir_out).
 act_dir(Dir_out,Act,n) :- Act = move_left  , Dir_out = w , direction(Dir_out).
 act_dir(Dir_out,Act,n) :- Act = move_right , Dir_out = e , direction(Dir_out).
 act_dir(Dir_out,Act,e) :- Act = move_left ,  Dir_out = n , direction(Dir_out).
@@ -70,9 +71,10 @@ act_dir(Dir_out,Act,w) :- Act = move_right , Dir_out = n , direction(Dir_out).
 forward_only(Dir_map) :- Dir_map = (1;2;4;8).
 % Given a train direction and outgoing direction on a specific Track , returns possible Actions that resulted in these 
 action_from_dir_dir_map(move_forward,Dir,Dir_out,Dir_map) :- forward_only(Dir_map) , direction(Dir) , direction(Dir_out).      % all tiles without turning options while going towards Dir
-action_from_dir_dir_map(wait,Dir,Dir_out,Dir_map)         :- forward_only(Dir_map) , direction(Dir) , direction(Dir_out).
+%action_from_dir_dir_map(wait,Dir,Dir_out,Dir_map)         :- forward_only(Dir_map) , direction(Dir) , direction(Dir_out).
 action_from_dir_dir_map(Act,Dir,Dir_out,Dir_map)          :- act_dir(Dir_out,Act,Dir) , not forward_only(Dir_map) , dir_map_range(Dir_map).  
 
+connection(Tr,Dir,Dir,wait) :- track(Tr) , direction(Dir).
 connection(Tr,Dir_in,Dir_out,Act) :-    %track(Tr) ,             
                                         action_from_dir_dir_map(Act,Dir_in,Dir_out,Dir_map) ,
                                         tr_map(Dir_map, Dir_in, Tr) ,
