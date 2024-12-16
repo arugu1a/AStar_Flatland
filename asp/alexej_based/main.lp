@@ -1,7 +1,7 @@
 #include "track_facts.lp".
 #include "transition_logic.lp".
 #include "interaction_logic.lp".
-
+%#include "malf_test_env005.lp".
 
 % Optimization
 %cost_of_action(1,move_forward).
@@ -22,7 +22,7 @@ action(train(ID), A, T) :- action_(train(ID), A, T). %, not goal(ID,T).
 %action(train(ID), move_forward, T+1) :- action_(train(ID), _, T) , goal(ID,T).
 
 % these are just used for Display
-%a(ID,(Y,X),A,Dir,T) :- action(train(ID), A, T) , on(X,Y,ID,Dir,T).
+a(ID,(Y,X),A,Dir,T) :- action(train(ID), A, T) , on(X,Y,ID,Dir,T).
 on(X,Y,ID,M) :- on(X,Y,ID,_,M).
 
 %Display
@@ -32,4 +32,4 @@ on(X,Y,ID,M) :- on(X,Y,ID,_,M).
 %#show action/3.
 %#show moves/2.
 %#show on/5.
-#show delay/2.
+%#show delay/2.

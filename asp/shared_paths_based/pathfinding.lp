@@ -1,6 +1,6 @@
 {route(ID,Start,Dir,End,EndTime-StartTime) : duplicate_route(ID) , start(ID,Start,StartTime,Dir) , end(ID,End,EndTime) }=1 :- duplicate_route.                                      % treat multiple same start&end as one route 
 route(ID,Start,Dir,End,EndTime-StartTime) :- not duplicate_route(ID) , start(ID,Start,StartTime,Dir) , end(ID,End,EndTime).                                     
-duplicate_route(ID2) :- start(ID1,(Y,X),_,Dir) , start(ID2,(Y,X),_,Dir) ,  end(ID1,(Y',X'),End1) , end(ID2,(Y',X'),End2) , ID1!=ID2 , End1 <= End2.
+duplicate_route(ID2) :- start(ID1,(Y,X),_,Dir) , start(ID2,(Y,X),_,Dir) ,  end(ID1,(Y',X'),End1) , end(ID2,(Y',X'),End2) , ID1!=ID2 , End2 <= End1.
 duplicate_route :- duplicate_route(_).
 
 train_route(ID,Route) :- route(Route,Start,Dir,End,EndTime-StartTime) , start(ID,Start,StartTime,Dir) , end(ID,End,EndTime).
@@ -9,8 +9,8 @@ train_route(ID,Route) :- route(Route,Start,Dir,End,EndTime-StartTime) , start(ID
 % How? Different path answers in ASP have to be part of the same answer set
 path(Route,0,Start,Dir,0) :- route(Route,Start,Dir,End,_).
 
-{action_((R,P),A,Step) : act(A) , A != wait}=1 :- on(X,Y,(R,P),Dir,Step) , not goal((R,P),Step).%not Step=50
-:- action_((R,P),A,T) , on(X,Y,(R,P),Dir,T) , cell((Y,X),Tr) , not connection(Tr,Dir,_,A).
+{action_((R,P),A,Step) : act(A) , A != wait}=1 :- on(X,Y,(R,P),Dir,Step) , not goal((R,P),Step) , not max_cells(Step).
+%:- action_((R,P),A,Step) , on(X,Y,(R,P),Dir,Step) , cell((Y,X),Tr) , not connection(Tr,Dir,_,A).
 
 % no path can be longer than number of cells with a track
 % BETTER: no path is allowed to loop, how is that formulated?
@@ -35,8 +35,8 @@ on(X,Y,(R,P),Dir_out,T+1) :-    action_((R,P), A, T) ,                   %
                                 move_in(Dir_out , (X1,Y1)) ,                
                                 (X,Y)=(X'+ X1,Y' + Y1),                  % move train position
                                 cell((Y,X),Tr) , Tr != 0,                % new position must be a track
-                                not route(R,_,_,_,T) ,                   
                                 not goal((R,P),T) ,
+                                route(R,_,_,_,MAX_T) , not T>MAX_T ,
                                 connection(Tr',Dir',Dir_out,A).          % dir_out has to taken with action, so this line can be removed. -------------------------
 
 
@@ -44,16 +44,18 @@ on(X,Y,(R,P),Dir_out,T+1) :-    action_((R,P), A, T) ,                   %
 %:- on(X,Y,(Route,ID),Dir,T) , on(X,Y,(Route,ID),Dir,T2), T2 > T.
 
 % Goal condition
+%:- on(X,Y,(R,0),_,Step) , route(R,_,_,(Y,X),MAX_T) , Step>MAX_T.
 goal(R,P) :- goal((R,P),_).
-goal((R,P),T) :- on(X,Y,(R,P),_,T) , route(R,_,_,(Y,X),MAX_T) , T<=MAX_T.
+goal((R,P),Step) :- on(X,Y,(R,P),_,Step) , route(R,_,_,(Y,X),MAX_T) , Step<=MAX_T.
 :- not goal(R,P) , path(R,P,_,_,_).
 
 %#show duplicate_route/1.
-#show train_route/2.
-%#show route/5.
+%#show train_route/2.
+#show route/5.
 %#show path/5.
 %#show on/5.
 %#show action_/3.
+%#show action/3.
 %#show goal/2.
 %#show max_cells/1.
 %#show path_length/2.
