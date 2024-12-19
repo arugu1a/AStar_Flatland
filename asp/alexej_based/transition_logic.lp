@@ -1,8 +1,8 @@
 % how many time steps is a train allowed to do actions?
 % After M is reached the train should be at dest. and stay there 
 % -> only act(wait) allowed after M is reached. (THIS IS NOT IMPLEMENTED, trains can go past the target as long as they get there again eventually)
-% past_malfunctions_delay(M,ID) :- M = #sum {malf(ID,none,Dir,T)} , malf(ID,none,Dir,T).
-moves(M,ID) :- start(ID,_,St,_) , end(ID,_,End) , M= End , past_malfunctions_delay(Malf_del,ID) , malfunction(ID,Malf_del,_). % - St +1.
+past_malfunctions_delay(M,ID) :- M = #sum {Dur,ID,T : malfunction(ID,Dur,T)} , train(ID).
+moves(M,ID) :- start(ID,_,St,_) , end(ID,_,End) , M= End+Past_malf_del , past_malfunctions_delay(Past_malf_del,_).
 
 % Define
 
@@ -22,7 +22,7 @@ on(X,Y,ID,Dir_out,T+1) :-   action_(train(ID), A, T) ,                   %
                             on(X',Y',ID,Dir',T) ,                       % Cell the train is on step T
                             cell((Y',X'),Tr') ,                         % 
                             waiting(Move_dir' , A , Dir_out) ,           % if Action is waiting -> no movement, but keep dir
-                            malf(ID,Move_dir,Move_dir',T) , 
+                            malf(ID,_,Move_dir,Move_dir',T) , 
                             move_in(Move_dir , (X1,Y1)) ,               % 
                             (X,Y)=(X'+ X1,Y' + Y1),                     % move train position
                             not moves(T,ID) ,                           % 
@@ -30,8 +30,8 @@ on(X,Y,ID,Dir_out,T+1) :-   action_(train(ID), A, T) ,                   %
 
 %should work. If secondary encoding is same as primary encoding. 
 %For normal env's without malfunctions this just wastes grounding
-malf(ID,Move_dir,Move_dir,T) :- train(ID) , direction(Move_dir) , not malfunction(ID,_,T) , on(_,_,ID,_,T).
-malf(ID,none,Move_dir,T) :- train(ID) , direction(Move_dir) , malfunction(ID,_,T).
+malf(ID,no_malf,Move_dir,Move_dir,T) :- train(ID) , direction(Move_dir) , not malfunction(ID,_,T) , on(_,_,ID,_,T).
+malf(ID,start_of_malf,none,Move_dir,T) :- train(ID) , direction(Move_dir) , malfunction(ID,_,T).
 %malfunction(0,3,10). %:- malfunction(ID,_,T) , action_(train(ID), A, T) , act(A) , A!=wait.
 
 waiting(none , wait , Dir) :- direction(Dir).           
@@ -43,6 +43,8 @@ turning(Act) :- Act = move_left ; Act = move_right.                         % no
 
 %#show action/3.
 %#show waiting/3.
-%#show malf/4.
+%#show malf/5.
+#show.
+%#show X : X = malf(ID,start_of_malf,none,Move_dir,T) , malf(ID,_,_,Move_dir,T).
 %#show on/4.
 #show past_malfunctions_delay/2.
