@@ -7,10 +7,10 @@ act(wait).
 % cardinal direction vector encoding for the grid space
 % n: north, e: east, s: south, w: west
 
-#const n = (-1, 0).
-#const e = (0, 1).
-#const s = (1, 0).
-#const w = (0, -1).
+% #const n = (-1, 0).
+% #const e = (0, 1).
+% #const s = (1, 0).
+% #const w = (0, -1).
 
 % Directions. The none-direction is only used in Move_dir for waiting and not defined here.
 direction(n).
@@ -74,7 +74,7 @@ action_from_dir_dir_map(move_forward,Dir,Dir_out,Dir_map) :- forward_only(Dir_ma
 %action_from_dir_dir_map(wait,Dir,Dir_out,Dir_map)         :- forward_only(Dir_map) , direction(Dir) , direction(Dir_out).
 action_from_dir_dir_map(Act,Dir,Dir_out,Dir_map)          :- act_dir(Dir_out,Act,Dir) , not forward_only(Dir_map) , dir_map_range(Dir_map).  
 
-connection(Tr,Dir,Dir,wait) :- track(Tr) , direction(Dir).
+connection(Tr,Dir,Dir,wait) :- track(Tr) , direction(Dir) , Tr !=0.
 connection(Tr,Dir_in,Dir_out,Act) :-    %track(Tr) ,             
                                         action_from_dir_dir_map(Act,Dir_in,Dir_out,Dir_map) ,
                                         tr_map(Dir_map, Dir_in, Tr) ,
