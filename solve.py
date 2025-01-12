@@ -20,6 +20,7 @@ from flatland.utils.rendertools import RenderTool
 import imageio.v2 as imageio
 from PIL import Image, ImageDraw, ImageFont
 
+make_GIF = False
 
 class MalfunctionManager():
     def __init__(self, num_agents):
