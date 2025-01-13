@@ -19,28 +19,30 @@ action(train(Train_ID), wait, Time) :- start(Train_ID, _, Start_time, _), Time=0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % start kick
-kick(Train_ID, (Train_ID, Time), (X, Y), Outgoing_direction, Action) :- start(Train_ID, (X, Y), Time, Incoming_direction),
+kick(Train_ID, (Train_ID, Time), (X, Y), Outgoing_direction, Action, Speed) :- start(Train_ID, (X, Y), Time, Incoming_direction),
 																			cell((X, Y), TrackType),
+																			speed(Train_ID, Speed),
 																			connection(TrackType, Incoming_direction, Outgoing_direction, Action).
 
 % start wait kick
 % dirty workaround:	setting the kick position to (Y-B, X-A) to preserve the direction of the train but 
 % 					at the same time achieve a illusory +(0, 0) movement
-kick(Train_ID, (Train_ID, Time), (X-B, Y-A), (B, A), wait) :- start(Train_ID, (X, Y), Time, (B, A)).
+kick(Train_ID, (Train_ID, Time), (X-B, Y-A), (B, A), wait, 1) :- start(Train_ID, (X, Y), Time, (B, A)).
 
-{move(Train_ID, (X + B, Y + A), (Train_ID, Time+1), (B, A), Action)} :- kick(Train_ID, (Train_ID, Time), (X, Y), (B, A), Action),
+{move(Train_ID, (X + B, Y + A), (Train_ID, Time+Speed), (B, A), Action)} :- kick(Train_ID, (Train_ID, Time), (X, Y), (B, A), Action, Speed),
 																			time(Train_ID, Time),
 																			end(Train_ID, (_, _), End_time),
 																			Time<End_time.
 																			
-kick(Train_ID, (Train_ID, Time), (X, Y), Outgoing_direction, Action) :- move(Train_ID, (X, Y), (Train_ID, Time), Incoming_direction, _),
+kick(Train_ID, (Train_ID, Time), (X, Y), Outgoing_direction, Action, Speed) :- move(Train_ID, (X, Y), (Train_ID, Time), Incoming_direction, _),
 																			cell((X, Y), Track_type),
+																			speed(Train_ID, Speed),
 																			connection(Track_type, Incoming_direction, Outgoing_direction, Action),
 																			not end(Train_ID, (X, Y), _).
 
 % wait kicks
 % same workaround as in the start wait kick																
-kick(Train_ID, (Train_ID, Time), (X-B, Y-A), (B, A), wait) :- move(Train_ID, (X, Y), (Train_ID, Time), (B, A), _),
+kick(Train_ID, (Train_ID, Time), (X-B, Y-A), (B, A), wait, 1) :- move(Train_ID, (X, Y), (Train_ID, Time), (B, A), _),
 																			cell((X, Y), _),
 																			not end(Train_ID, (X, Y), _).
 
