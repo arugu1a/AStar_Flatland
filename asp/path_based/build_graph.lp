@@ -40,6 +40,6 @@ edge_count(N) :- N = #count { edge(A,B,A_in,A_out,B_in,L) : edge(A,B,A_in,A_out,
 % problem: what if multiple edge(B,A)? how to find correct dir_out?
 
 %
-#show node/1.
-#show edge_count/1.
-#show edge/6.
+%#show node/1.
+%#show edge_count/1.
+%#show edge/6.
