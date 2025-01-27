@@ -3,3 +3,4 @@
 
 #show position/4.
 #show action/3.
+#show arrived/2.
