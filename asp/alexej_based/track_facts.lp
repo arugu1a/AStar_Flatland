@@ -19,6 +19,12 @@ direction(s).
 direction(w).
 direction(none).
 
+mirrored_dir(n,s).
+mirrored_dir(e,w).
+mirrored_dir(s,n).
+mirrored_dir(w,e).
+mirrored_dir(none,none).
+
 move_in(n    , (0,-1)).
 move_in(e    , (1,0) ).
 move_in(s    , (0,1) ).

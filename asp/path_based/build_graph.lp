@@ -31,6 +31,13 @@ edge_count(N) :- N = #count { edge(A,B,A_in,A_out,B_in,L) : edge(A,B,A_in,A_out,
 %path((A,B),(C,D)) :- link((A,B),(A',B'),_) , link((C',D'),(C,D),_) , path((A',B'),(C',D')) , cell((B,A),Tr1) , cell((D,C),Tr2) , forward_track(Tr1) , forward_track(Tr2) , not node(A,B) , not node(C,D).
 %path((A,B),(C,D)) :- link((A,B),(A',B'),_) , link((A',B'),(C,D),_) , cell((B,A),Tr1) , forward_track(Tr1) , cell((B',A'),Tr2) , forward_track(Tr2) , cell((D,C),Tr3) , forward_track(Tr3) , not node(A,B) , not node(C,D) , (A,B) != (C,D).
 
+% ---- EXPERIMENTS ----
+connection(A,B,A_in) :- edge(A,B,A_in,_,_,_).
+1{edge_o(A,B,A_in,A_out,B_in,L) : edge(A,B,A_in,A_out,B_in,L)}1 :- connection(A,B,A_in).
+edge_o_count(N) :- N = #count { edge_o(A,B,A_in,A_out,B_in,L) : edge_o(A,B,A_in,A_out,B_in,L)}.
+
+%on(ID,edge(A,B,A_in,A_out,B_in,L),-1,T+L) :- on(X,Y,ID,Dir,T) , cell((Y,X),Tr).
+% ----             ----
 % TODO
 % store length in path -> generate move forwards quickly
 % given start,end node, find connected paths.
@@ -41,5 +48,6 @@ edge_count(N) :- N = #count { edge(A,B,A_in,A_out,B_in,L) : edge(A,B,A_in,A_out,
 
 %
 %#show node/1.
-%#show edge_count/1.
-%#show edge/6.
+#show edge_count/1.
+#show edge_o_count/1.
+%#show edge_o/6.
