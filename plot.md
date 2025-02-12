@@ -14,8 +14,7 @@ using matplotlib. You can use the **optional argument** -n/--models to set the m
 
 > [!IMPORTANT] required facts
 > This script only works when your encoding generates train position
-> facts of the following format:
-
+> facts of the following format:    
 > ~~~ 
 > pos(Train_ID, (Y, X), Time).
 > ~~~
