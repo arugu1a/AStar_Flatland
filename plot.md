@@ -12,14 +12,12 @@ Clingo then solves the logic programs. This script goes through all the
 models and creates a heatmap for all the train positions and plots them
 using matplotlib. You can use the **optional argument** -n/--models to set the maximum number of to be calculated models.
 
-
 > [!IMPORTANT] required facts
 > This script only works when your encoding generates train position
 > facts of the following format:
 > ~~~ 
 > pos(Train_ID, (Y, X), Time).
 > ~~~
-
 
 ## Example Usage
     python plot.py asp/encoding.lp envs/lp/env.lp -n 1000
