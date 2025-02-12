@@ -1,6 +1,6 @@
 %Start
 
-delay(ID1,Del) :- Del = Dep..(Dep-1 + 10) , N = #count { ID : start(ID,(Y,X),Dep,_) } , start(ID1,(Y,X),Dep,_).
+delay(ID1,Del) :- Del = Dep..(Dep + 10) , N = #count { ID : start(ID,(Y,X),Dep,_) } , start(ID1,(Y,X),Dep,_).
 {start_with_delay(ID,(Y,X),Del,Dir) : delay(ID,Del)}=1 :- start(ID,(Y,X),Dep,Dir).     % delay has to return Del = Dep + time needed so all trains can depart on this spot.
 
 on_node(ID,(X,Y),Dir,Dep)   :-  start_with_delay(ID,(Y,X),Dep,Dir).
@@ -30,7 +30,10 @@ critical_edge(T1,T2,T1',T2',edge_o(A,B,A_in,A_out,B_in,L)) :-
 
 :- critical_edge(T1,T2,T1',T2',edge_o(A,B,A_in,A_out,B_in,L)). 
 
+%generate actions causes grounding issues on larger maps?
 %generate actions 1st line generates actions on nodes, 2nd line filler actions
+action(ID,move_forward,Dep) :- start_with_delay(ID,(Y,X),Dep,Dir).                  %only for Flatland, Spawn in
+action(ID,move_forward,T2+1)   :- action(ID,Act1,T1) , action(ID,Act2,T2) , T2>T1.  %only for Flatland, filler action reguired for "TypeError: object of type 'NoneType' has no len()" bug
 action(ID,Act,T1)           :- T1 = T2-L , on_node(ID,A,A_in,T1) , on_node(ID,B,B_in,T2) , edge_o(A,B,A_in,A_out,B_in,L) , connection(Tr,A_in,A_out,Act) , Act!=wait , cell((Y,X), Tr) , A=(X,Y) , T1 < T2.
 action(ID,move_forward,T)   :- T2-T1>1 , T=T1+1..T2-1 , T1 = T2-L , on_node(ID,A,A_in,T1) , on_node(ID,B,B_in,T2) , edge_o(A,B,A_in,A_out,B_in,L) , connection(Tr,A_in,A_out,Act) , Act!=wait , cell((Y,X), Tr) , A=(X,Y) , T1 < T2.
 % ---- ----
