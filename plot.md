@@ -10,7 +10,8 @@ This script takes **2 input arguments**.
 
 Clingo then solves the logic programs. This script goes through all the 
 models and creates a heatmap for all the train positions and plots them
-using matplotlib. You can use the **optional argument** -n/--models to set the maximum number of to be calculated models.
+using matplotlib. You can use the **optional argument** -n/--models to
+set the maximum number of models to be calculated.
 
 > [!IMPORTANT] required facts
 > This script only works when your encoding generates train position
