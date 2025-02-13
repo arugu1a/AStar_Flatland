@@ -8,9 +8,9 @@ This script takes **2 input arguments**.
 1. path to encoding .lp file
 2. path to environment .lp file
 
-Clingo then solves the logic programs. This script goes through all the 
-models and creates a heatmap for all the train positions and plots them
-using matplotlib. You can use the **optional argument** -n/--models to
+Clingo then solves the logic programs. This script processes all
+generated models, creates a heatmap of train positions, and visualizes
+them using Matplotlib. You can use the **optional argument** -n/--models to
 set the maximum number of models to be calculated.
 
 > [!IMPORTANT] required facts
