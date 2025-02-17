@@ -12,11 +12,6 @@ forward_track(4608). forward_track(16386). forward_track(72). forward_track(2064
 %#show link/4.
 %#show edge/5.
 
-%PROBLEM: what about cross or station pieces? cannot distinguish 2 paths on a simple loop without switches A to B to A.
-% remove this, just use Dir out
-choice(move_forward,a).
-choice(move_left,b).
-choice(move_right,b).
 %connects two positions
 link((X,Y),(X',Y'),Dir_in,Dir_out) :- connection(Tr,Dir_in,Dir_out,A) , cell((Y,X),Tr) , cell((Y',X'),Tr') , move_in(Dir_out , (X1,Y1)) , (X',Y')=(X+ X1,Y + Y1) , Dir_out != none , A != wait.
 
@@ -28,6 +23,8 @@ path((A,B),(C,D),Dir_in,L+1) :- link((A,B),(A',B'),Dir_in,Dir_out) , path((A',B'
 path((A,B),(C,D),Dir_in,1)   :- link((A,B),(C,D),Dir_in,Dir_out)                                                                  , (A,B)!=(C,D) , cell((B,A),Tr1) , cell((D,C),Tr2) , forward_track(Tr1) , forward_track(Tr2) , not node((A,B)) , not node((C,D)).
 
 edge_count(N) :- N = #count { edge(A,B,A_in,A_out,B_in,L) : edge(A,B,A_in,A_out,B_in,L)}.
+node_count(N) :- N = #count { node((X,Y)) : node((X,Y))}.
+
 %path((A,B),(C,D)) :- link((A,B),(A',B'),_) , link((C',D'),(C,D),_) , path((A',B'),(C',D')) , cell((B,A),Tr1) , cell((D,C),Tr2) , forward_track(Tr1) , forward_track(Tr2) , not node(A,B) , not node(C,D).
 %path((A,B),(C,D)) :- link((A,B),(A',B'),_) , link((A',B'),(C,D),_) , cell((B,A),Tr1) , forward_track(Tr1) , cell((B',A'),Tr2) , forward_track(Tr2) , cell((D,C),Tr3) , forward_track(Tr3) , not node(A,B) , not node(C,D) , (A,B) != (C,D).
 
@@ -49,5 +46,6 @@ edge_o_count(N) :- N = #count { edge_o(A,B,A_in,A_out,B_in,L) : edge_o(A,B,A_in,
 %
 %#show node/1.
 #show edge_count/1.
+#show node_count/1.
 #show edge_o_count/1.
 %#show edge_o/6.

@@ -33,3 +33,6 @@ on(X,Y,ID,M) :- on(X,Y,ID,_,M).
 %#show moves/2.
 %#show on/5.
 %#show delay/2.
+
+%for plot.py
+pos(ID, (Y, X), T) :- a(ID,(Y,X),A,Dir,T).
