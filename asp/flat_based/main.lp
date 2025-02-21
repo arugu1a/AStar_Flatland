@@ -1,6 +1,9 @@
 #include "tracks.lp".
 #include "trains.lp".
 
-%#show position/4.
-#show action/3.
-%#show moving_to/3.
+
+% fact for matrix generation
+pos(ID, (Y, X), Time) :- position(ID, (Y, X), _, Time).
+
+%#show action/3.
+#show arrived/1.
