@@ -143,20 +143,20 @@ connection(52275, w, s, move_left).
 % 20994
 connection(20994, e, s, move_forward).
 connection(20994, w, s, move_forward).
-connection(20994, n, w, move_forward).
-connection(20994, n, e, move_forward).
+connection(20994, n, w, move_left).
+connection(20994, n, e, move_right).
 % 16458
 connection(16458, n, e, move_forward).
 connection(16458, s, e, move_forward).
-connection(16458, w, n, move_forward).
-connection(16458, w, s, move_forward).
+connection(16458, w, n, move_right).
+connection(16458, w, s, move_left).
 % 2136
 connection(2136, e, n, move_forward).
 connection(2136, w, n, move_forward).
-connection(2136, s, w, move_forward).
-connection(2136, s, e, move_forward).
+connection(2136, s, w, move_right).
+connection(2136, s, e, move_left).
 % 6672
 connection(6672, n, w, move_forward).
 connection(6672, s, w, move_forward).
-connection(6672, e, n, move_forward).
-connection(6672, e, s, move_forward).
+connection(6672, e, n, move_left).
+connection(6672, e, s, move_right).

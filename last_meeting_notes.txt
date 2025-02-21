@@ -1,0 +1,12 @@
+presentation:
+- highlevel
+- narrative
+- helpful context (e.g. failed attempts)
+- focus on actual accomplishments
+- visuals nice to have < content
+
+report:
+- letter to next students, inspire
+- dont explain flatland
+- how boundaries pushed
+- describe remaining problems

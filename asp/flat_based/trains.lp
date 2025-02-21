@@ -1,7 +1,7 @@
-action(move_forward).
-action(move_left).
-action(move_right).
-action(wait).
+command(move_forward).
+command(move_left).
+command(move_right).
+command(wait).
 
 % select one Timestep to spawn
 {spawn(ID, EarliestDeparture..ArrivalTime-MinTravelTime)} = 1 :-
@@ -12,45 +12,41 @@ action(wait).
 
 action(train(ID), wait, Time) :- spawn(ID, SpawnTime), 
                                 Time=0..SpawnTime-1.
-                                
+
 action(train(ID), move_forward, SpawnTime) :- spawn(ID, SpawnTime).
-position(ID, (Y, X), Direction, SpawnTime+1) :- 
+position(ID, (Y, X), Direction, SpawnTime+1) :-
                                 spawn(ID, SpawnTime),
                                 start(ID, (Y, X), _, Direction).
 
 {action((train(ID)), Action, Time)} :-
                     position(ID, (Y, X), _, Time),
-                    action(Action),
+                    command(Action),
                     not end(ID, (Y, X), _),
                     end(ID, _, EndTime),
-                    Time < EndTime.
-
-% the following two rules contain a lot of code duplication
-% some other syntax?
-% maybe it is possible to get rid of moving_to
+                    Time <= EndTime.
 
 position(ID, (Y+B, X+A), (B, A), Time+Speed) :-
-            position(ID, (Y, X), Incoming_direction, Time),
+            position(ID, (Y, X), Direction, Time),
             action(train(ID), Action, Time),
             speed(ID, Speed),
             cell((Y, X), Track),
-            connection(Track, Incoming_direction, (B, A), Action).
+            connection(Track, Direction, (B, A), Action).
 
-moving_to(ID, (Y+B, X+A), Time..Time+Speed-1) :-
-            position(ID, (Y, X), Incoming_direction, Time),
+in_motion(ID, (Y, X), (Y+B, X+A), Time..Time+Speed-1) :-
+            position(ID, (Y, X), In_direction, Time),
             action(train(ID), Action, Time),
+            connection(Track, In_direction, (B, A), Action),
             speed(ID, Speed),
             cell((Y, X), Track),
-            connection(Track, Incoming_direction, (B, A), Action).
+            Action != wait.
 
 position(ID, (Y, X), Direction, Time+1) :-
             position(ID, (Y, X), Direction, Time),
             action(train(ID), Action, Time),
             Action = wait.
 
-
-arrived(ID, Time) :- position(ID, (Y, X), _, Time),
-                end(ID, (Y, X), _).
+:- position(ID, (Y,X), _, Time), position(ID2, (Y,X),_,Time),
+    ID != ID2.
 
 % a train must reach the end position
 :- end(ID, (Y, X), _),
@@ -62,22 +58,13 @@ arrived(ID, Time) :- position(ID, (Y, X), _, Time),
     Action != Action2,
     ID = ID2.
 
-% train is not allowd to move after end, this is obsolete because
-% of the choice rule, to be deleted
-%* :- action(train(ID), _, Time),
-    end(ID, _, Latest_arrival_time),
-    Time > Latest_arrival_time-1.
-*%
+:- in_motion(ID, (Y, X), (B, A), Time),
+    in_motion(ID2, (B, A), (Y, X), Time),
+    ID != ID2.
 
-:- moving_to(ID1, (Y, X), Time), moving_to(ID2, (Y, X), Time),
-    ID1 != ID2.
+:- in_motion(ID, (Y, X), _, Time),
+    in_motion(ID2, _, (Y, X), Time),
+    ID != ID2.
 
-%*:- position(ID1, (B, A), _, Time-Speed1),
-    speed(ID, Speed1),
-    moving_to(ID1, (Y, X), Time),
-    position(ID2, (Y, X), _, Time-Speed2),
-    speed(ID, Speed2),
-    moving_to(ID2, (B, A), Time),
-    ID1 != ID2.
-*%
-
+arrived(ID) :- end(ID, Position, _),
+                position(ID, Position, _, _).
