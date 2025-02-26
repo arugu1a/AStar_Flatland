@@ -40,9 +40,10 @@ in_motion(ID, (Y, X), (Y+B, X+A), Time..Time+Speed-1) :-
             cell((Y, X), Track),
             Action != wait.
 
-position(ID, (Y, X), Direction, Time+1) :-
+position(ID, (Y, X), Direction, Time+Speed) :-
             position(ID, (Y, X), Direction, Time),
             action(train(ID), Action, Time),
+            speed(ID, Speed),
             Action = wait.
 
 :- position(ID, (Y,X), _, Time), position(ID2, (Y,X),_,Time),
