@@ -10,6 +10,8 @@ command(wait).
                     speed(ID, Speed),
                     MinTravelTime = |Y-Y1|+|X-X1|*Speed.
 
+:- spawn(_, 0).
+
 action(train(ID), wait, Time) :- spawn(ID, SpawnTime), 
                                 Time=0..SpawnTime-1.
 
@@ -37,13 +39,11 @@ in_motion(ID, (Y, X), (Y+B, X+A), Time..Time+Speed-1) :-
             action(train(ID), Action, Time),
             connection(Track, In_direction, (B, A), Action),
             speed(ID, Speed),
-            cell((Y, X), Track),
-            Action != wait.
+            cell((Y, X), Track).
 
-position(ID, (Y, X), Direction, Time+Speed) :-
+position(ID, (Y, X), Direction, Time+1) :-
             position(ID, (Y, X), Direction, Time),
             action(train(ID), Action, Time),
-            speed(ID, Speed),
             Action = wait.
 
 :- position(ID, (Y,X), _, Time), position(ID2, (Y,X),_,Time),
