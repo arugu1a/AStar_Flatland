@@ -1,8 +1,7 @@
 #include "../alexej_based/track_facts.lp".
 #include "./build_graph.lp".
-%#include "./pathfinding_test.lp".
-%#include "./pathfinding_.lp".
-%#include "./pathfinding_collision.lp".
+#include "./pathfinding_.lp".
+#include "./pathfinding_collision.lp".
 
 % Actions added to handle spawn in and expected action list length for Flatland
 action(train(ID),wait,0..Dep-1) :- Dep > 0 , start_with_delay(ID,(Y,X),Dep,Dir).
