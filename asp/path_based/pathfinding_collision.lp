@@ -5,26 +5,15 @@
 
 % wait collisions (a train drives on a waiting train traveling the same direction)
 :-  on_node(ID1,B,B_in,T,W) , on_node(ID2,B,B_in,T',W') , ID1!=ID2 , T>T', 
-    %edge_o(A,B,_,A_out,B_in,L) , edge_o(A,B,_,A_out,B_in,L) , 
-    %T<=T'-W'.
     T <= T'+W.
 
 % edge collision
-%critical_edge(T1,T2,T1',T2',edge_o(A,B,A_in,A_out,B_in,L)) 
-%previous_edge(A,B_in,B,L) :- edge_o(A,B,A_in,A_out,B_in,L).
-
- %T2>0 , T1 = T2-L-Wait_time , T1' = T2'-L-Wait_time' , 
-    %on_node(ID1,B,B_in,T2,Wait_time) , on_node(ID2,A,A_in',T2',Wait_time') ,
 %critical_edge(A,B,ID1,ID2,T1,T2,T1',T2') 
 :-  in_motion(ID1,A,A_in,A_out,B_in,B,T1,T2,Wait_time) , in_motion(ID2,B,B_in',B_out',A_in',A,T1',T2',Wait_time') ,
     mirrored_dir(B_in,B_out') , mirrored_dir(A_out,A_in') , ID1!=ID2 , T1<=T1'<=T2. 
-%critical_edge(A,B,ID1,ID2,T1,T2,T1',T2') 
 :-  in_motion(ID1,A,A_in,A_out,B_in,B,T1,T2,Wait_time) , in_motion(ID2,B,B_in',B_out',A_in',A,T1',T2',Wait_time') ,
     mirrored_dir(B_in,B_out') , mirrored_dir(A_out,A_in') , ID1!=ID2 , T1<=T2'<=T2.
 
-%:- critical_edge(_,_,_,_,T1,T2,T1',T2') , T1<=T1'<=T2.
-%:- critical_edge(_,_,_,_,T1,T2,T1',T2') , T1<=T2'<=T2.
-%:- critical_edge(A,B,ID1,ID2,T1,T2,T1',T2').
 % ---- ----
 %#show on_node/5.
 %#show on_node_count/1.
