@@ -23,7 +23,6 @@ position(ID, (Y, X), Direction, SpawnTime+1) :-
 {action((train(ID)), Action, Time)} :-
                     position(ID, (Y, X), _, Time),
                     command(Action),
-                    not end(ID, (Y, X), _),
                     end(ID, _, EndTime),
                     Time <= EndTime.
 
@@ -41,10 +40,10 @@ in_motion(ID, (Y, X), (Y+B, X+A), Time..Time+Speed-1) :-
             speed(ID, Speed),
             cell((Y, X), Track).
 
-position(ID, (Y, X), Direction, Time+1) :-
+position(ID, (Y, X), Direction, Time+Speed) :-
             position(ID, (Y, X), Direction, Time),
-            action(train(ID), Action, Time),
-            Action = wait.
+            action(train(ID), wait, Time),
+            speed(ID, Speed).
 
 :- position(ID, (Y,X), _, Time), position(ID2, (Y,X),_,Time),
     ID != ID2.
@@ -67,5 +66,6 @@ position(ID, (Y, X), Direction, Time+1) :-
     in_motion(ID2, _, (Y, X), Time),
     ID != ID2.
 
-arrived(ID) :- end(ID, Position, _),
+
+done(ID) :- end(ID, Position, _),
                 position(ID, Position, _, _).
