@@ -227,6 +227,13 @@ def main():
         # images.append(imageio.imread(filename))
 
         timestep = timestep + 1
+    
+    for i, agent in enumerate(env.agents):
+        if agent.position is not None:
+            position = agent.position
+        else:
+            position = "off map"
+        log.add(f'{i};{timestep};{position};{dir_map[agent.direction]};{dir_map[env.agents[i].direction]};{state_map[env.agents[i].state]};\n')
 
     # get time stamp for gif and output log
     stamp = time.time()
@@ -235,7 +242,7 @@ def main():
     # combine images into gif
     if not no_render:
         imageio.mimsave(f"output/{stamp}/animation.gif", images, format='GIF', loop=0, duration=240)
-
+    
     # save output log
     log.save(stamp)
 
