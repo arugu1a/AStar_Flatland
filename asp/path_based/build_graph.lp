@@ -21,9 +21,10 @@ edge_count(N) :- N = #count { edge(A,B,A_in,A_out,B_in,L) : edge(A,B,A_in,A_out,
 node_count(N) :- N = #count { node((X,Y)) : node((X,Y))}.
 
 % ---- EXPERIMENTS ----
-connection(A,B,A_in) :- edge(A,B,A_in,_,_,_).
-1{edge_o(A,B,A_in,A_out,B_in,L) : edge(A,B,A_in,A_out,B_in,L)}1 :- connection(A,B,A_in).
-edge_o_count(N) :- N = #count { edge_o(A,B,A_in,A_out,B_in,L) : edge_o(A,B,A_in,A_out,B_in,L)}.
+edge_o(A,B,A_in,A_out,B_in,L) :- edge(A,B,A_in,A_out,B_in,L).
+%connection(A,B,A_in) :- edge(A,B,A_in,_,_,_).
+%1{edge_o(A,B,A_in,A_out,B_in,L) : edge(A,B,A_in,A_out,B_in,L)}1 :- connection(A,B,A_in).
+%edge_o_count(N) :- N = #count { edge_o(A,B,A_in,A_out,B_in,L) : edge_o(A,B,A_in,A_out,B_in,L)}.
 
 #show edge_count/1.
 #show node_count/1.
