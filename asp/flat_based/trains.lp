@@ -33,17 +33,17 @@ position(ID, (Y+B, X+A), (B, A), Time+Speed) :-
             cell((Y, X), Track),
             connection(Track, Direction, (B, A), Action).
 
-in_motion(ID, (Y, X), (Y+B, X+A), Time..Time+Speed-1) :-
-            position(ID, (Y, X), In_direction, Time),
-            action(train(ID), Action, Time),
-            connection(Track, In_direction, (B, A), Action),
-            speed(ID, Speed),
-            cell((Y, X), Track).
-
-position(ID, (Y, X), Direction, Time+Speed) :-
+position(ID, (Y, X), Direction, Time+1) :-
             position(ID, (Y, X), Direction, Time),
             action(train(ID), wait, Time),
             speed(ID, Speed).
+
+in_motion(ID, (Y, X), (Y+B, X+A), Time..Time+Speed-1) :-
+            position(ID, (Y, X), Direction, Time),
+            action(train(ID), Action, Time),
+            connection(Track, Direction, (B, A), Action),
+            speed(ID, Speed),
+            cell((Y, X), Track).
 
 :- position(ID, (Y,X), _, Time), position(ID2, (Y,X),_,Time),
     ID != ID2.
@@ -63,7 +63,7 @@ position(ID, (Y, X), Direction, Time+Speed) :-
     ID != ID2.
 
 :- in_motion(ID, (Y, X), _, Time),
-    in_motion(ID2, _, (Y, X), Time),
+    position(ID2, (Y, X), _, Time),
     ID != ID2.
 
 
