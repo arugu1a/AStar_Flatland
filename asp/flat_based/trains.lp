@@ -6,9 +6,9 @@ command(wait).
 % select one Timestep to spawn
 {spawn(ID, EarliestDeparture..ArrivalTime-MinTravelTime)} = 1 :-
                     start(ID, (Y, X), EarliestDeparture, _),
-                    end(ID, (Y1, X1), ArrivalTime),
+                    end(ID, (B, A), ArrivalTime),
                     speed(ID, Speed),
-                    MinTravelTime = |Y-Y1|+|X-X1|*Speed.
+                    MinTravelTime = |Y-B|+|X-A|*Speed.
 
 :- spawn(_, 0).
 
@@ -65,7 +65,3 @@ in_motion(ID, (Y, X), (Y+B, X+A), Time..Time+Speed-1) :-
 :- in_motion(ID, (Y, X), _, Time),
     position(ID2, (Y, X), _, Time),
     ID != ID2.
-
-
-done(ID) :- end(ID, Position, _),
-                position(ID, Position, _, _).
